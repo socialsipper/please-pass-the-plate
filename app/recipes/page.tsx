@@ -19,6 +19,13 @@ const categories = [
   "Healthy Options",
 ];
 
+function getAverageRating(ratings: { rating: number }[] | null) {
+  if (!ratings || ratings.length === 0) return null;
+
+  const total = ratings.reduce((sum, item) => sum + item.rating, 0);
+  return total / ratings.length;
+}
+
 export default async function RecipesPage({
   searchParams,
 }: {
@@ -29,7 +36,7 @@ export default async function RecipesPage({
 
   let query = supabase
     .from("recipes")
-    .select("*")
+    .select("*, ratings(rating)")
     .order("created_at", { ascending: false });
 
   if (selectedCategory !== "All") {
@@ -39,9 +46,9 @@ export default async function RecipesPage({
   const { data: recipes } = await query;
 
   return (
-    <main className="min-h-screen bg-orange-50 p-8 text-black">
+    <main className="min-h-screen bg-white px-4 py-8 text-[#656E77]">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-8 text-4xl font-bold text-orange-800">
+        <h1 className="mb-6 text-4xl font-extrabold text-[#3B5BA5]">
           Recipe Library
         </h1>
 
@@ -49,10 +56,13 @@ export default async function RecipesPage({
           <input
             name="q"
             placeholder="Search recipes, ingredients, or contributors..."
-            className="w-full rounded-xl border p-4 text-black"
+            className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-[#656E77] outline-none focus:border-[#3B5BA5]"
           />
 
-          <button className="mt-3 rounded-xl bg-orange-700 px-6 py-3 text-white">
+          <button
+            className="mt-3 rounded-full px-6 py-3 font-bold text-white shadow-sm"
+            style={{ backgroundColor: "#E87A5D" }}
+          >
             Search
           </button>
         </form>
@@ -66,11 +76,16 @@ export default async function RecipesPage({
                   ? "/recipes"
                   : `/recipes?category=${encodeURIComponent(category)}`
               }
-              className={`rounded-full px-4 py-2 text-sm font-semibold shadow ${
+              className={`rounded-full px-4 py-2 text-sm font-bold shadow-sm ${
                 selectedCategory === category
-                  ? "bg-orange-700 text-white"
-                  : "bg-white text-stone-800 hover:bg-orange-100"
+                  ? "text-white"
+                  : "border border-slate-200 bg-white text-[#656E77] hover:bg-slate-50"
               }`}
+              style={
+                selectedCategory === category
+                  ? { backgroundColor: "#E87A5D" }
+                  : undefined
+              }
             >
               {category}
             </Link>
@@ -78,39 +93,51 @@ export default async function RecipesPage({
         </div>
 
         {recipes && recipes.length === 0 && (
-          <p className="rounded-xl bg-white p-6 shadow">
+          <p className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
             No recipes found in this category.
           </p>
         )}
 
-        <div className="space-y-4">
-          {recipes?.map((recipe) => (
-            <Link
-              href={`/recipes/${recipe.id}`}
-              key={recipe.id}
-              className="block rounded-2xl bg-white p-6 text-black shadow hover:bg-orange-50"
-            >
-              {recipe.main_photo_url && (
-                <img
-                  src={recipe.main_photo_url}
-                  alt={recipe.title}
-                  className="mb-4 h-48 w-full rounded-xl object-cover"
-                />
-              )}
+        <div className="space-y-5">
+          {recipes?.map((recipe) => {
+            const averageRating = getAverageRating(recipe.ratings);
 
-              <h2 className="text-2xl font-bold text-stone-900">
-                {recipe.title}
-              </h2>
+            return (
+              <Link
+                href={`/recipes/${recipe.id}`}
+                key={recipe.id}
+                className="block overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+              >
+                {recipe.main_photo_url && (
+                  <img
+                    src={recipe.main_photo_url}
+                    alt={recipe.title}
+                    className="h-56 w-full object-cover"
+                  />
+                )}
 
-              <p className="text-stone-800">
-                {recipe.contributor_name}
-              </p>
+                <div className="p-6">
+                  <h2 className="text-2xl font-bold text-[#3B5BA5]">
+                    {recipe.title}
+                  </h2>
 
-              <p className="mt-2 text-stone-800">
-                Category: {recipe.category}
-              </p>
-            </Link>
-          ))}
+                  <p className="mt-1 text-[#656E77]">
+                    By {recipe.contributor_name || "Family"}
+                  </p>
+
+                  <p className="mt-2 text-[#656E77]">
+                    Category: {recipe.category}
+                  </p>
+
+                  <p className="mt-3 font-bold text-[#E87A5D]">
+                    {averageRating
+                      ? `⭐ ${averageRating.toFixed(1)} / 5`
+                      : "No ratings yet"}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </main>

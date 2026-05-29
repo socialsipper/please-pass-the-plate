@@ -23,9 +23,7 @@ export default function FavoriteButton({ recipeId }: { recipeId: string }) {
     const savedName = localStorage.getItem("favorite_user_name") || "";
     setUserName(savedName);
 
-    if (savedName) {
-      checkFavorite(savedName);
-    }
+    if (savedName) checkFavorite(savedName);
   }, [recipeId]);
 
   async function toggleFavorite() {
@@ -70,7 +68,7 @@ export default function FavoriteButton({ recipeId }: { recipeId: string }) {
   }
 
   return (
-    <div className="mt-4 rounded-2xl bg-pink-50 p-4">
+    <div className="mt-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
       <label className="block font-semibold text-black">
         Your Name
         <input
@@ -89,13 +87,10 @@ export default function FavoriteButton({ recipeId }: { recipeId: string }) {
       <button
         onClick={toggleFavorite}
         disabled={loading}
-        className="mt-3 rounded-xl bg-pink-700 px-5 py-3 text-white hover:bg-pink-800"
+        className="mt-3 inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-medium text-white"
+        style={{ backgroundColor: "#E87A5D" }}
       >
-        {loading
-          ? "Saving..."
-          : isFavorite
-          ? "❤️ Favorited"
-          : "♡ Add to Favorites"}
+        {loading ? "Saving..." : isFavorite ? "♡ Favorited" : "♡ Add to Favorites"}
       </button>
     </div>
   );

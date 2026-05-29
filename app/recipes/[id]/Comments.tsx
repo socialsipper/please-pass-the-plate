@@ -51,10 +51,8 @@ export default function Comments({ recipeId }: { recipeId: string }) {
   }
 
   return (
-    <div className="mt-8 rounded-2xl bg-orange-50 p-5">
-      <h2 className="text-2xl font-bold text-black">
-        Family Comments
-      </h2>
+    <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+      <h2 className="text-2xl font-bold text-[#3B5BA5]">Family Comments</h2>
 
       <form onSubmit={addComment} className="mt-4 space-y-3">
         <input
@@ -72,7 +70,8 @@ export default function Comments({ recipeId }: { recipeId: string }) {
 
         <button
           type="submit"
-          className="rounded-xl bg-orange-700 px-5 py-3 text-white hover:bg-orange-800"
+          className="inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-medium text-white"
+          style={{ backgroundColor: "#E87A5D" }}
         >
           {saving ? "Saving..." : "Add Comment"}
         </button>
@@ -80,24 +79,21 @@ export default function Comments({ recipeId }: { recipeId: string }) {
 
       <div className="mt-6 space-y-3">
         {comments.length === 0 ? (
-          <p className="text-gray-600">
+          <p className="text-[#656E77]">
             No comments yet. Be the first to share a family memory!
           </p>
         ) : (
           comments.map((comment) => (
-            <div
-              key={comment.id}
-              className="rounded-xl bg-white p-4 shadow"
-            >
-              <p className="font-semibold text-black">
+            <div key={comment.id} className="rounded-xl bg-slate-50 p-4">
+              <p className="font-semibold text-[#3B5BA5]">
                 {comment.author_name || "Family Member"}
               </p>
 
-              <p className="mt-2 whitespace-pre-wrap text-black">
+              <p className="mt-2 whitespace-pre-wrap text-[#656E77]">
                 {comment.comment}
               </p>
 
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-slate-400">
                 {new Date(comment.created_at).toLocaleDateString()}
               </p>
             </div>
