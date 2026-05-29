@@ -30,16 +30,16 @@ export default async function Home() {
           </p>
 
           <form className="mt-6" action="/recipes/search">
-  <input
-    name="q"
-    placeholder="Search recipes..."
-    className="w-full rounded-xl border p-4 text-black"
-  />
+            <input
+              name="q"
+              placeholder="Search recipes..."
+              className="w-full rounded-xl border p-4 text-black"
+            />
 
-  <button className="mt-3 rounded-xl bg-orange-700 px-6 py-3 text-white">
-    Search
-  </button>
-</form>
+            <button className="mt-3 rounded-xl bg-orange-700 px-6 py-3 text-white">
+              Search
+            </button>
+          </form>
 
           <div className="mt-6 flex gap-4">
             <Link
@@ -97,12 +97,13 @@ export default async function Home() {
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {categories.map((category) => (
-              <div
+              <Link
                 key={category}
-                className="rounded-xl bg-white p-4 text-black shadow"
+                href={`/recipes?category=${encodeURIComponent(category)}`}
+                className="rounded-xl bg-white p-4 text-black shadow hover:bg-orange-100"
               >
                 {category}
-              </div>
+              </Link>
             ))}
           </div>
         </section>
